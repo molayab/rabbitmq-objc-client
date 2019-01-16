@@ -83,25 +83,6 @@ long writeTag = UINT32_MAX + 1;
         self.socket = [[GCDAsyncSocket alloc] initWithDelegate:self
                                                  delegateQueue:dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0)];
         
-#ifdef IPHONE_TARGET
-        // This is a temporary test.
-        // Get the streams and set the VoIP property.
-        
-        CFReadStreamRef readStream = [self.socket readStream];
-        CFWriteStreamRef writeStream = [self.socket writeStream];
-        
-        BOOL readContext, writeContext;
-        
-        NSLog(@"Enabling backgrouding on socket");
-        
-        readContext = CFReadStreamSetProperty(readStream, kCFStreamNetworkServiceType, kCFStreamNetworkServiceTypeVoIP);
-        writeContext = CFWriteStreamSetProperty(writeStream, kCFStreamNetworkServiceType, kCFStreamNetworkServiceTypeVoIP);
-        
-        if (!readContext || !writeContext) {
-            NSLog(@"Error trying to enabling backgrouding on socket");
-        }
-#endif
-        
         self.host = host;
         self.port = port;
         self.tlsOptions = tlsOptions;
@@ -130,6 +111,27 @@ long writeTag = UINT32_MAX + 1;
     BOOL success = [self.socket connectToHost:self.host
                                        onPort:self.port.unsignedIntegerValue
                                         error:error];
+#ifdef IPHONE_TARGET
+    if (success) {
+        // This is a temporary test.
+        // Get the streams and set the VoIP property.
+        
+        CFReadStreamRef readStream = [self.socket readStream];
+        CFWriteStreamRef writeStream = [self.socket writeStream];
+        
+        BOOL readContext, writeContext;
+        
+        NSLog(@"RABBITMQ: Enabling backgrouding on socket");
+        
+        readContext = CFReadStreamSetProperty(readStream, kCFStreamNetworkServiceType, kCFStreamNetworkServiceTypeVoIP);
+        writeContext = CFWriteStreamSetProperty(writeStream, kCFStreamNetworkServiceType, kCFStreamNetworkServiceTypeVoIP);
+        
+        if (!readContext || !writeContext) {
+            NSLog(@"RABBITMQ:  Error trying to enabling backgrouding on socket");
+        }
+    }
+#endif
+    
     if (self.tlsOptions.useTLS) {
         return [self tlsUpgradeWithError:error];
     } else {
