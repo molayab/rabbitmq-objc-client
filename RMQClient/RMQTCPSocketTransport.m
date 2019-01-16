@@ -225,10 +225,10 @@ struct __attribute__((__packed__)) AMQPHeader {
     // This is a temporary test.
     // Get the streams and set the VoIP property.
     
-    __block id context = self;
+    __weak RMQTCPSocketTransport * context = self;
     
     [self.socket performBlock:^{
-        if ([context enableBackgroundingOnSocket]) {
+        if ([context.socket enableBackgroundingOnSocket]) {
             NSLog(@"RabbitMQ: Did enabling backgorund socket");
         } else {
             NSLog(@"RabbitMQ: Error on enabling backgorund socket");
