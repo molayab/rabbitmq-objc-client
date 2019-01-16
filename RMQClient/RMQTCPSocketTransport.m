@@ -225,18 +225,10 @@ struct __attribute__((__packed__)) AMQPHeader {
     // This is a temporary test.
     // Get the streams and set the VoIP property.
     
-    CFReadStreamRef readStream = [self.socket readStream];
-    CFWriteStreamRef writeStream = [self.socket writeStream];
-    
-    BOOL readContext, writeContext;
-    
-    NSLog(@"RABBITMQ: Enabling backgrouding on socket");
-    
-    readContext = CFReadStreamSetProperty(readStream, kCFStreamNetworkServiceType, kCFStreamNetworkServiceTypeVoIP);
-    writeContext = CFWriteStreamSetProperty(writeStream, kCFStreamNetworkServiceType, kCFStreamNetworkServiceTypeVoIP);
-    
-    if (!readContext || !writeContext) {
-        NSLog(@"RABBITMQ:  Error trying to enabling backgrouding on socket");
+    if ([sock enableBackgroundingOnSocket]) {
+        NSLog(@"RabbitMQ: Did enabling backgorund socket");
+    } else {
+        NSLog(@"RabbitMQ: Error on enabling backgorund socket");
     }
 #endif
 }
