@@ -111,26 +111,6 @@ long writeTag = UINT32_MAX + 1;
     BOOL success = [self.socket connectToHost:self.host
                                        onPort:self.port.unsignedIntegerValue
                                         error:error];
-#ifdef IPHONE_TARGET
-    if (success) {
-        // This is a temporary test.
-        // Get the streams and set the VoIP property.
-        
-        CFReadStreamRef readStream = [self.socket readStream];
-        CFWriteStreamRef writeStream = [self.socket writeStream];
-        
-        BOOL readContext, writeContext;
-        
-        NSLog(@"RABBITMQ: Enabling backgrouding on socket");
-        
-        readContext = CFReadStreamSetProperty(readStream, kCFStreamNetworkServiceType, kCFStreamNetworkServiceTypeVoIP);
-        writeContext = CFWriteStreamSetProperty(writeStream, kCFStreamNetworkServiceType, kCFStreamNetworkServiceTypeVoIP);
-        
-        if (!readContext || !writeContext) {
-            NSLog(@"RABBITMQ:  Error trying to enabling backgrouding on socket");
-        }
-    }
-#endif
     
     if (self.tlsOptions.useTLS) {
         return [self tlsUpgradeWithError:error];
@@ -240,6 +220,25 @@ struct __attribute__((__packed__)) AMQPHeader {
 
 - (void)socket:(GCDAsyncSocket *)sock didConnectToHost:(NSString *)host port:(uint16_t)port {
     self._isConnected = true;
+    
+#ifdef IPHONE_TARGET
+    // This is a temporary test.
+    // Get the streams and set the VoIP property.
+    
+    CFReadStreamRef readStream = [self.socket readStream];
+    CFWriteStreamRef writeStream = [self.socket writeStream];
+    
+    BOOL readContext, writeContext;
+    
+    NSLog(@"RABBITMQ: Enabling backgrouding on socket");
+    
+    readContext = CFReadStreamSetProperty(readStream, kCFStreamNetworkServiceType, kCFStreamNetworkServiceTypeVoIP);
+    writeContext = CFWriteStreamSetProperty(writeStream, kCFStreamNetworkServiceType, kCFStreamNetworkServiceTypeVoIP);
+    
+    if (!readContext || !writeContext) {
+        NSLog(@"RABBITMQ:  Error trying to enabling backgrouding on socket");
+    }
+#endif
 }
 
 - (NSTimeInterval)socket:(GCDAsyncSocket *)sock
