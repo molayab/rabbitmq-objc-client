@@ -105,6 +105,10 @@
     self.lastBeatAt = self.clock.read;
 }
 
+- (void)trigger {
+    [self.transport write:self.heartbeatData];
+}
+
 # pragma mark - Private
 
 - (BOOL)intervalPassed:(NSNumber *)intervalSeconds {

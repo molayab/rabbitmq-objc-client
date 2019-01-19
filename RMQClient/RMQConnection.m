@@ -332,6 +332,10 @@ NSInteger const RMQChannelLimit = 65535;
     }
 }
 
+- (void)forceHeartbeat {
+    [self.heartbeatSender trigger];
+}
+
 # pragma mark - RMQSender
 
 - (void)sendFrameset:(RMQFrameset *)frameset

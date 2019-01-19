@@ -56,5 +56,6 @@
 - (void (^)())startWithInterval:(NSNumber *)intervalSeconds;
 - (void)stop;
 - (void)signalActivity;
+- (void)trigger;
 
 @end

@@ -174,4 +174,6 @@ extern NSInteger const RMQChannelLimit;
  */
 - (nonnull id<RMQChannel>)createChannel;
 
+- (void)forceHeartbeat;
+
 @end
