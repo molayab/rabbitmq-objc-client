@@ -213,6 +213,9 @@ struct __attribute__((__packed__)) AMQPHeader {
 # pragma mark - GCDAsyncSocketDelegate
 
 - (void)socket:(GCDAsyncSocket *)sock didReadData:(NSData *)data withTag:(long)tag {
+    
+    NSLog(@" !!! -> New data read from the socket: %lu", (unsigned long)data.length);
+    
     void (^foundCallback)(NSData *) = self.callbacks[@(tag)];
     [self.callbacks removeObjectForKey:@(tag)];
     foundCallback(data);
